@@ -101,3 +101,5 @@ if __name__ == "__main__":
     
     observer.join()
     print("✅ Semua proses telah dihentikan. Sampai jumpa!")
+    
+#s
