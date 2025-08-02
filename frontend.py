@@ -61,8 +61,8 @@ class WallpaperWidget(QWidget):
         # ---------------------------------------
     def initUI(self):
         self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            # Qt.WindowType.WindowStaysOnBottomHint
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnBottomHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         
