@@ -5,6 +5,7 @@ import requests
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit
 from PyQt6.QtCore import Qt, QObject, QThread, pyqtSignal, QPoint, QTimer
 from PyQt6.QtGui import QMouseEvent
+import time
 
 # Hapus BACKEND_URL yang statis dari sini
 
@@ -39,7 +40,14 @@ class WallpaperWidget(QWidget):
         self.thread = None
         self.worker = None
         self.initUI()
-        self.initial_height = self.height() # Simpan tinggi awal jendela
+        self.initial_height = 200 # Simpan tinggi awal jendela
+        self.initial_width = 1200 # Simpan lebar awal jendela
+        self.setGeometry(300, 300, self.initial_width, self.initial_height) # Sedikit perbesar tinggi jendela
+        self.adjustSize()
+        self.resize(self.initial_width, self.height())
+        print(self.initial_height, self.height())
+        print(self.initial_height, self.layout().sizeHint().height())
+        print(f"Width = {self.width()}")
         # --- LANGKAH 1: Setup Timer dan Animasi ---
         self.loading_timer = QTimer(self)
         self.loading_timer.timeout.connect(self.update_loading_text)
@@ -53,11 +61,10 @@ class WallpaperWidget(QWidget):
         # ---------------------------------------
     def initUI(self):
         self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint | 
-            Qt.WindowType.WindowStaysOnBottomHint
+            Qt.WindowType.FramelessWindowHint
+            # Qt.WindowType.WindowStaysOnBottomHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setGeometry(300, 300, 800, 180) # Sedikit perbesar tinggi jendela
         
         # --- Layout Utama Vertikal ---
         main_layout = QVBoxLayout()
@@ -68,7 +75,7 @@ class WallpaperWidget(QWidget):
 
         # 1. Input Field untuk Alamat IP Server
         self.ip_field = QLineEdit(self)
-        self.ip_field.setText("http://127.0.0.1:8000") # Nilai default
+        self.ip_field.setText("http://163.61.44.203:8000") # Nilai default
         self.ip_field.setStyleSheet("""
             QLineEdit {
                 color: #B0B0B0; background-color: rgba(20, 20, 20, 0.7);
@@ -80,6 +87,7 @@ class WallpaperWidget(QWidget):
         # 2. Kotak Input untuk Pertanyaan
         self.input_field = QLineEdit(self)
         self.input_field.setPlaceholderText("Ketik pertanyaan Anda di sini, lalu tekan Enter...")
+        self.input_field.setText("siapakah FAUZI RAFLI FATHURRACHMAN itu?") # Nilai default
         self.input_field.setStyleSheet("""
             QLineEdit {
                 color: #E0E0E0; background-color: rgba(20, 20, 20, 0.7);
@@ -130,7 +138,7 @@ class WallpaperWidget(QWidget):
         self.full_answer_text = text
         self.current_char_index = 0
         self.result_label.setText("") # Kosongkan label sebelum mulai
-        self.typing_timer.start(30) # Atur kecepatan mengetik (ms)
+        self.typing_timer.start(1) # Atur kecepatan mengetik (ms)
         
     def update_typing_text(self):
         """Menambahkan satu karakter ke label."""
@@ -142,6 +150,9 @@ class WallpaperWidget(QWidget):
         else:
             # Jika sudah selesai, hentikan timer
             self.typing_timer.stop()
+            
+            
+            
     # Ganti nama fungsi get_ai_response menjadi start_ai_request
     def start_ai_request(self):
         user_query = self.input_field.text()
@@ -151,10 +162,14 @@ class WallpaperWidget(QWidget):
         if not user_query or not server_ip:
             self.result_label.setText("Alamat IP dan Pertanyaan tidak boleh kosong.")
             return
-        self.resize(self.width(), self.initial_height)
+        
+        self.result_label.setText("")
+        self.adjustSize()
+        self.resize(self.initial_width, self.height())
+        print(self.initial_height, self.height())
         self.start_loading_animation()
-        self.input_field.clear()
-
+        # self.input_field.clear()
+        
         # Bangun URL backend secara dinamis
         backend_url = f"{server_ip.strip()}/ask"
 
@@ -176,8 +191,12 @@ class WallpaperWidget(QWidget):
     def update_result(self, answer):
         """Fungsi ini dipanggil saat sinyal 'finished' diterima."""
         self.stop_loading_animation()
-        # self.result_label.setText(answer)
-        self.start_typing_animation(answer) 
+        self.result_label.setText(answer)
+        self.adjustSize()
+        self.resize(self.initial_width, self.height())
+        print(self.initial_height, self.height())
+        print(self.initial_height, self.layout().sizeHint().height())
+        # self.start_typing_animation(answer)
 
     def update_error(self, error_msg):
         """Fungsi ini dipanggil saat sinyal 'error' diterima."""
