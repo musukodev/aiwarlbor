@@ -75,7 +75,7 @@ class WallpaperWidget(QWidget):
 
         # 1. Input Field untuk Alamat IP Server
         self.ip_field = QLineEdit(self)
-        self.ip_field.setText("http://163.61.44.203:8000") # Nilai default
+        self.ip_field.setText("http://localhost:8000") # Nilai default
         self.ip_field.setStyleSheet("""
             QLineEdit {
                 color: #B0B0B0; background-color: rgba(20, 20, 20, 0.7);
@@ -86,8 +86,8 @@ class WallpaperWidget(QWidget):
         
         # 2. Kotak Input untuk Pertanyaan
         self.input_field = QLineEdit(self)
-        self.input_field.setPlaceholderText("Ketik pertanyaan Anda di sini, lalu tekan Enter...")
-        self.input_field.setText("siapakah FAUZI RAFLI FATHURRACHMAN itu?") # Nilai default
+        self.input_field.setPlaceholderText("Type your question here, then press Enter.")
+        self.input_field.setText("") # Nilai default
         self.input_field.setStyleSheet("""
             QLineEdit {
                 color: #E0E0E0; background-color: rgba(20, 20, 20, 0.7);
@@ -103,7 +103,7 @@ class WallpaperWidget(QWidget):
         input_layout.addWidget(self.input_field, 2) # Angka 2 membuat input pertanyaan lebih lebar
 
         # 3. Label untuk menampilkan jawaban AI
-        self.result_label = QLabel("Jawaban AI akan muncul di sini.", self)
+        self.result_label = QLabel("The AI's answer will appear here.", self)
         self.result_label.setWordWrap(True)
         self.result_label.setStyleSheet("""
             QLabel {
